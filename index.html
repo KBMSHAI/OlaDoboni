@@ -2,69 +2,23 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>דובוני מורה לאנגלית</title>
-    <style>
-        body {
-            background-color: #121212;
-            color: #ffffff;
-            font-family: sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        .card {
-            background-color: #1e1e1e;
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
-            width: 350px;
-        }
-        img {
-            width: 150px;
-            height: 150px;
-            border-radius: 50%;
-            border: 4px solid #4a90e2;
-            margin-bottom: 20px;
-        }
-        h1 { font-size: 24px; margin-bottom: 10px; }
-        p { color: #aaaaaa; margin-bottom: 30px; }
-        .mic-btn {
-            background-color: #4a90e2;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 50px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-        }
-        .input-box {
-            width: 100%;
-            padding: 10px;
-            margin-top: 15px;
-            background: #333;
-            border: none;
-            color: white;
-            border-radius: 5px;
-            box-sizing: border-box;
-        }
-    </style>
+    <title>Doboni Tutor</title>
 </head>
 <body>
+    <h1>Doboni English Tutor</h1>
+    <img src="https://raw.githubusercontent.com/KBMSHAI/OlaDoboni/main/1000076831.jpg" alt="Doboni" width="200">
+    <br>
+    <button id="send-btn">שלח הודעה ל-Make</button>
 
-    <div class="card">
-        <img src="https://raw.githubusercontent.com/KBMSHAI/OlaDoboni/main/1000076831.jpg" alt="דובוני">
-        
-        <h1>דובוני מורה לאנגלית</h1>
-        <p>ההודעה נשלחה! מחבר את תשובת המורה...</p>
-        
-        <button class="mic-btn" onclick="alert('המיקרופון מופעל!')">🎤 לחצי כדי לדבר</button>
-        <input type="text" class="input-box" placeholder="או הקלידי כאן...">
-    </div>
-
+    <script>
+        document.getElementById('send-btn').addEventListener('click', async () => {
+            const response = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: "Hello Doboni" })
+            });
+            alert('הודעה נשלחה!');
+        });
+    </script>
 </body>
 </html>
