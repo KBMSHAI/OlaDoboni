@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>דובוני - אנגלית עם אולה</title>
+    
+    <link rel="apple-touch-icon" href="https://i.ibb.co/3pYf9yv/1000076831.jpg">
+    <link rel="icon" type="image/jpeg" href="https://i.ibb.co/3pYf9yv/1000076831.jpg">
+
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-image: url('https://images.unsplash.com/photo-1516321318423-f06f85e504b3?auto=format&fit=crop&w=800&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: rgba(15, 23, 42, 0.75);
+            backdrop-filter: blur(15px);
+            padding: 30px;
+            border-radius: 24px;
+            text-align: center;
+            width: 90%;
+            max-width: 420px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.1);
+        }
+        h1 { font-size: 24px; margin-bottom: 20px; color: #38bdf8; }
+        .avatar-box {
+            width: 200px;
+            height: 280px;
+            border-radius: 16px;
+            margin: 0 auto 20px;
+            overflow: hidden;
+            border: 4px solid #38bdf8;
+            background: #0f172a;
+        }
+        #avatar-img { width: 100%; height: 100%; object-fit: cover; }
+        .status { color: #e2e8f0; font-size: 16px; margin-bottom: 20px; min-height: 50px; }
+        .input-area { display: flex; gap: 10px; margin-top: 15px; }
+        .text-input {
+            flex: 1;
+            padding: 12px;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.2);
+            background: rgba(15, 23, 42, 0.8);
+            color: white;
+            font-size: 16px;
+            text-align: right;
+        }
+        .btn { border: none; padding: 12px 25px; font-size: 16px; font-weight: bold; border-radius: 12px; cursor: pointer; }
+        .btn-send { background: #38bdf8; color: #0f172a; }
+        .btn-mic { background: white; color: #0f172a; width: 100%; margin-bottom: 10px; border-radius: 50px; padding: 14px; font-size: 18px; font-weight: bold; }
+        .listening { background: #ef4444; color: white; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>דובוני מורה לאנגלית</h1>
+    <div class="avatar-box">
+        <img id="avatar-img" src="https://i.ibb.co/3pYf9yv/1000076831.jpg" alt="אווטר מורה">
+    </div>
+    <div id="status" class="status">שלום אולה! מוכנה לשיעור? הקלידי הודעה או לחצי על המיקרופון...</div>
+    <button id="mic-btn" class="btn-mic" onclick="toggleMic()">לחצי כדי לדבר 🎤</button>
+    <div class="input-area">
+        <input type="text" id="user-text" class="text-input" placeholder="או הקלידי כאן..." onkeypress="handleKeyPress(event)">
+        <button class="btn btn-send" onclick="sendText()">שלחי</button>
+    </div>
+</div>
+
+<script>
+    const MAKE_URL = "https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71";
+    const statusDiv = document.getElementById('status');
+    const textInput = document.getElementById('user-text');
+    const avatarImg = document.getElementById('avatar-img');
+    const micBtn = document.getElementById('mic-btn');
+    let recognition;
+    let isListening = false;
+
+    function sendText() {
+        const text = textInput.value.trim();
+        if (!text) return;
+        statusDiv.innerText = "דובוני חושב...";
+        sendToMake(text);
+        textInput.value = '';
+    }
+
+    function handleKeyPress(e) { if (e.key === 'Enter') sendText(); }
+
+    async function sendToMake(userText) {
+        try {
+            const response = await fetch(MAKE_URL, {
+                method: 'POST',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({ message: userText })
+            });
+            const data = await response.json();
+            statusDiv.innerText = data.avatar_script || "I'm ready for the next word!";
+            if (data.visual_setup && data.visual_setup.avatar_url) {
+                avatarImg.src = data.visual_setup.avatar_url;
+            }
+        } catch (err) {
+            statusDiv.innerText = "ההודעה נשלחה! מחבר את תשובת המורה...";
+        }
+    }
+
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    if (SpeechRecognition) {
+        recognition = new SpeechRecognition();
+        recognition.lang = 'en-US';
+        recognition.continuous = false;
+        recognition.onresult = (e) => {
+            const text = e.results[0][0].transcript;
+            statusDiv.innerText = `שמעתי: "${text}"`;
+            sendToMake(text);
+        };
+        recognition.onend = () => {
+            isListening = false;
+            micBtn.classList.remove('listening');
+            micBtn.innerText = "לחצי כדי לדבר 🎤";
+        };
+    }
+
+    function toggleMic() {
+        if (!recognition) { alert("הדפדפן לא תומך בזיהוי קולי."); return; }
+        if (isListening) { recognition.stop(); } else {
+            isListening = true;
+            micBtn.classList.add('listening');
+            micBtn.innerText = "דובוני מקשיב... 🛑";
+            recognition.start();
+        }
+    }
+</script>
+</body>
+</html>
