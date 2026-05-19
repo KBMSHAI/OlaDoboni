@@ -16,7 +16,7 @@
     <h1>דובוני המורה לאנגלית</h1>
     
     <div id="doboni-container">
-        <img id="doboni-img" src="DOBONI_IMAGE_URL" alt="Doboni">
+        <img id="doboni-img" src="https://ibb.co/pgftkr7" alt="Doboni">
     </div>
 
     <div id="response-box">דובוני מחכה לשמוע ממך...</div>
@@ -44,7 +44,7 @@
         // פונקציית שליחה
         document.getElementById('send-btn').addEventListener('click', async () => {
             const input = document.getElementById('user-input').value;
-            const res = await fetch('YOUR_MAKE_WEBHOOK_URL', {
+            const res = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
                 method: 'POST',
                 headers: {'Content-Type': 'application/json'},
                 body: JSON.stringify({ "content": input })
