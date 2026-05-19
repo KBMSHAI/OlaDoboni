@@ -2,22 +2,33 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <title>Doboni Tutor</title>
+    <title>Doboni English Tutor</title>
 </head>
 <body>
     <h1>Doboni English Tutor</h1>
-    <img src="https://raw.githubusercontent.com/KBMSHAI/OlaDoboni/main/1000076831.jpg" alt="Doboni" width="200">
-    <br>
-    <button id="send-btn">שלח הודעה ל-Make</button>
+    
+    <img src="דובוני.jpeg" alt="Doboni" width="200">
+    
+    <br><br>
+    
+    <input type="text" id="user-input" placeholder="כתוב כאן באנגלית...">
+    <button id="send-btn">שלח למורה</button>
 
     <script>
         document.getElementById('send-btn').addEventListener('click', async () => {
-            const response = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: "Hello Doboni" })
-            });
-            alert('הודעה נשלחה!');
+            const userInput = document.getElementById('user-input').value;
+            const webhookUrl = 'https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71';
+            
+            try {
+                const response = await fetch(webhookUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: userInput })
+                });
+                alert('ההודעה נשלחה למורה דובוני!');
+            } catch (error) {
+                alert('שגיאה בשליחה: ' + error);
+            }
         });
     </script>
 </body>
