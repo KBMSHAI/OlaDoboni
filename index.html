@@ -1,21 +1,26 @@
 async function sendMessage() {
     const input = document.getElementById('user-input').value;
     const resBox = document.getElementById('response-box');
-    const imgElement = document.getElementById('doboni-img'); // https://ibb.co/pgftkr7
+    const imgElement = document.getElementById('doboni-img');
 
     try {
         const res = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
             method: 'POST',
-            headers: {'Content-Type': 'application/json'},
+            headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ "content": input })
         });
+        
         const data = await res.json();
+        console.log("Data received:", data); // זה יראה לך ב-Console מה באמת חזר
         
-        // עדכון טקסט ותמונה
-        resBox.innerText = data.avatar_script;
-        if(data.avatar_url) imgElement.src = data.avatar_url;
-        
+        if (data.avatar_script) {
+            resBox.innerText = data.avatar_script;
+        }
+        if (data.avatar_url) {
+            imgElement.src = data.avatar_url;
+        }
     } catch (err) {
-        resBox.innerText = "שגיאה: וודא שה-Scenario ב-Make דולק ושהקישור תקין.";
+        console.error("Fetch error:", err);
+        resBox.innerText = "שגיאה בחיבור לשרת.";
     }
 }
