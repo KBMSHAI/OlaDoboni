@@ -2,45 +2,120 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doboni Tutor</title>
     <style>
-        body { font-family: sans-serif; background-color: #fdfdfd; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
-        .container { background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 400px; }
-        img { max-width: 150px; border-radius: 15px; margin-bottom: 20px; }
-        .input-group { display: flex; gap: 10px; margin-top: 20px; }
-        input { flex: 1; padding: 10px; border: 2px solid #ffb84d; border-radius: 8px; }
-        button { padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; background: #ffb84d; color: white; }
+        :root { --main-color: #ffb84d; }
+        body { 
+            font-family: 'Segoe UI', system-ui, sans-serif; 
+            background-color: #f0f4f8; 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; padding: 10px;
+        }
+        .container { 
+            background: #fff; padding: 25px; border-radius: 30px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            text-align: center; width: 100%; max-width: 500px; 
+        }
+        h1 { color: var(--main-color); margin-bottom: 15px; font-size: 1.8rem; }
+        
+        /* דובוני ואפקט הדיבור */
+        .character-box { position: relative; margin-bottom: 20px; }
+        img { 
+            width: 200px; height: 200px; object-fit: cover;
+            border-radius: 50%; border: 5px solid var(--main-color);
+            transition: transform 0.3s;
+        }
+        /* אנימציית "דיבור" */
+        @keyframes talking {
+            0% { transform: scale(1); border-width: 5px; }
+            50% { transform: scale(1.05); border-width: 8px; }
+            100% { transform: scale(1); border-width: 5px; }
+        }
+        .is-talking { animation: talking 0.4s infinite; }
+
+        .chat-box { 
+            background: #f9f9f9; padding: 15px; border-radius: 15px; 
+            margin-bottom: 20px; min-height: 50px; color: #333; font-weight: bold;
+        }
+        
+        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+        input { 
+            flex: 1; padding: 15px; border: 2px solid #ddd; 
+            border-radius: 15px; font-size: 16px; outline: none;
+        }
+        input:focus { border-color: var(--main-color); }
+        
+        .btn { 
+            padding: 15px; border: none; border-radius: 15px; 
+            cursor: pointer; font-size: 18px; font-weight: bold;
+            transition: 0.2s;
+        }
+        .btn-mic { background: #eee; color: #333; width: 60px; }
+        .btn-send { background: var(--main-color); color: white; flex: 1; }
+        .btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
+
     <div class="container">
-        <h1>Doboni Tutor</h1>
-        <img src="דובוני.jpeg" alt="Doboni">
-        <div class="input-group">
-            <input type="text" id="user-input" placeholder="כתוב כאן...">
-            <button onclick="startDictation()">🎤</button>
+        <h1>Doboni English Tutor</h1>
+        
+        <div class="character-box">
+            <img id="doboni-img" src="דובוני.jpeg" alt="Doboni">
         </div>
-        <button id="send-btn" style="width: 100%; margin-top: 10px;">שלח למורה דובוני</button>
+
+        <div id="response-text" class="chat-box">היי! אני דובוני. בוא נלמד אנגלית!</div>
+
+        <div class="input-group">
+            <input type="text" id="user-input" placeholder="כתוב כאן או דבר...">
+            <button class="btn btn-mic" onclick="startDictation()">🎤</button>
+        </div>
+        
+        <button id="send-btn" class="btn btn-send">שלח הודעה</button>
     </div>
 
     <script>
+        const img = document.getElementById('doboni-img');
+        const responseBox = document.getElementById('response-text');
+
         function startDictation() {
-            var recognition = new webkitSpeechRecognition();
+            if (!window.webkitSpeechRecognition) {
+                alert("הדפדפן לא תומך במיקרופון.");
+                return;
+            }
+            const recognition = new webkitSpeechRecognition();
             recognition.lang = 'en-US';
             recognition.start();
-            recognition.onresult = function(e) {
+            recognition.onresult = (e) => {
                 document.getElementById('user-input').value = e.results[0][0].transcript;
             };
         }
 
         document.getElementById('send-btn').addEventListener('click', async () => {
             const val = document.getElementById('user-input').value;
-            await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ content: val })
-            });
-            alert('נשלח!');
+            if(!val) return;
+
+            responseBox.innerText = "...דובוני חושב";
+            
+            try {
+                const res = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ content: val })
+                });
+
+                // הפעלת אפקט "דיבור" כשהתשובה חוזרת
+                img.classList.add('is-talking');
+                const data = await res.text(); // מניח ש-Make מחזיר טקסט
+                responseBox.innerText = data || "נשלח בהצלחה!";
+                
+                // הפסקת ה"דיבור" אחרי 3 שניות
+                setTimeout(() => img.classList.remove('is-talking'), 3000);
+                
+            } catch (e) {
+                responseBox.innerText = "אופס, יש תקלה בתקשורת.";
+            }
         });
     </script>
 </body>
