@@ -4,118 +4,43 @@
     <meta charset="UTF-8">
     <title>Doboni Tutor</title>
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #fdfdfd;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        .container {
-            background-color: #ffffff;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            text-align: center;
-            width: 90%;
-            max-width: 600px;
-        }
-
-        h1 {
-            color: #ffb84d;
-            font-size: 32px;
-            margin-bottom: 30px;
-            text-transform: uppercase;
-        }
-
-        .img-container {
-            margin-bottom: 30px;
-        }
-
-        img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
-        }
-
-        .input-group {
-            margin-top: 30px;
-            display: flex;
-            flex-direction: column;
-            gap: 15px;
-        }
-
-        input {
-            width: 100%;
-            padding: 15px;
-            border: 2px solid #ffb84d;
-            border-radius: 10px;
-            font-size: 16px;
-            outline: none;
-            box-sizing: border-box; /* מבטיח שהפדינג לא יגדיל את האלמנט */
-        }
-
-        input:focus {
-            border-color: #ff9f1a;
-        }
-
-        button {
-            background-color: #ffb84d;
-            color: white;
-            border: none;
-            padding: 15px 30px;
-            border-radius: 10px;
-            font-size: 18px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-
-        button:hover {
-            background-color: #ff9f1a;
-        }
+        body { font-family: sans-serif; background-color: #fdfdfd; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        .container { background: #fff; padding: 30px; border-radius: 20px; box-shadow: 0 10px 20px rgba(0,0,0,0.1); text-align: center; width: 90%; max-width: 400px; }
+        img { max-width: 150px; border-radius: 15px; margin-bottom: 20px; }
+        .input-group { display: flex; gap: 10px; margin-top: 20px; }
+        input { flex: 1; padding: 10px; border: 2px solid #ffb84d; border-radius: 8px; }
+        button { padding: 10px 15px; border: none; border-radius: 8px; cursor: pointer; background: #ffb84d; color: white; }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>Doboni Tutor</h1>
-        
-        <div class="img-container">
-            <img src="דובוני.jpeg" alt="Doboni Tutor">
-        </div>
-        
+        <img src="דובוני.jpeg" alt="Doboni">
         <div class="input-group">
-            <input type="text" id="user-input" placeholder="...כתוב כאן את ההודעה למורה">
-            <button id="send-btn">שלח למורה דובוני</button>
+            <input type="text" id="user-input" placeholder="כתוב כאן...">
+            <button onclick="startDictation()">🎤</button>
         </div>
+        <button id="send-btn" style="width: 100%; margin-top: 10px;">שלח למורה דובוני</button>
     </div>
 
     <script>
-        document.getElementById('send-btn').addEventListener('click', async () => {
-            const userInput = document.getElementById('user-input').value;
-            const webhookUrl = 'https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71';
-            
-            if (userInput.trim() === '') {
-                alert('אנא כתוב משהו לפני השליחה.');
-                return;
-            }
+        function startDictation() {
+            var recognition = new webkitSpeechRecognition();
+            recognition.lang = 'en-US';
+            recognition.start();
+            recognition.onresult = function(e) {
+                document.getElementById('user-input').value = e.results[0][0].transcript;
+            };
+        }
 
-            try {
-                const response = await fetch(webhookUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content: userInput })
-                });
-                
-                alert('ההודעה נשלחה למורה דובוני!');
-                document.getElementById('user-input').value = ''; // ניקוי שדה הקלט לאחר שליחה
-                
-            } catch (error) {
-                alert('שגיאה בשליחה. נסה שוב מאוחר יותר.');
-            }
+        document.getElementById('send-btn').addEventListener('click', async () => {
+            const val = document.getElementById('user-input').value;
+            await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ content: val })
+            });
+            alert('נשלח!');
         });
     </script>
 </body>
