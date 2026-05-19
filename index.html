@@ -5,85 +5,72 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doboni Tutor</title>
     <style>
-        :root { --main-color: #ffb84d; }
-        body { 
-            font-family: 'Segoe UI', system-ui, sans-serif; 
-            background-color: #f0f4f8; 
-            display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; padding: 10px;
+        /* כאן משנים את הצבע בהתאם לנושא השיעור */
+        :root { 
+            --bg-color: #e0f7fa; /* צבע רקע משתנה */
+            --main-color: #ff9800; 
         }
-        .container { 
-            background: #fff; padding: 25px; border-radius: 30px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
-            text-align: center; width: 100%; max-width: 500px; 
-        }
-        h1 { color: var(--main-color); margin-bottom: 15px; font-size: 1.8rem; }
         
-        /* דובוני ואפקט הדיבור */
-        .character-box { position: relative; margin-bottom: 20px; }
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background-color: var(--bg-color); 
+            display: flex; justify-content: center; align-items: center; 
+            min-height: 100vh; margin: 0; transition: background-color 0.5s;
+        }
+        
+        .container { 
+            background: #fff; padding: 30px; border-radius: 40px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
+            text-align: center; width: 90%; max-width: 450px; 
+        }
+
+        /* עיצוב דמות חלק */
+        .character-box { margin-bottom: 25px; }
         img { 
-            width: 200px; height: 200px; object-fit: cover;
-            border-radius: 50%; border: 5px solid var(--main-color);
-            transition: transform 0.3s;
+            width: 180px; height: 180px; 
+            border-radius: 30px; /* פינות מעוגלות חלקות */
+            object-fit: cover; /* מונע עיוות של התמונה */
+            border: 4px solid #fff;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
         }
-        /* אנימציית "דיבור" */
-        @keyframes talking {
-            0% { transform: scale(1); border-width: 5px; }
-            50% { transform: scale(1.05); border-width: 8px; }
-            100% { transform: scale(1); border-width: 5px; }
-        }
-        .is-talking { animation: talking 0.4s infinite; }
 
         .chat-box { 
-            background: #f9f9f9; padding: 15px; border-radius: 15px; 
-            margin-bottom: 20px; min-height: 50px; color: #333; font-weight: bold;
+            background: #f1f1f1; padding: 20px; border-radius: 20px; 
+            margin-bottom: 20px; min-height: 60px; font-size: 1.1rem;
         }
-        
-        .input-group { display: flex; gap: 10px; margin-bottom: 15px; }
+
+        .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
         input { 
-            flex: 1; padding: 15px; border: 2px solid #ddd; 
-            border-radius: 15px; font-size: 16px; outline: none;
+            flex: 1; padding: 15px; border: none; 
+            background: #f9f9f9; border-radius: 15px; font-size: 16px;
         }
-        input:focus { border-color: var(--main-color); }
         
-        .btn { 
-            padding: 15px; border: none; border-radius: 15px; 
-            cursor: pointer; font-size: 18px; font-weight: bold;
-            transition: 0.2s;
-        }
-        .btn-mic { background: #eee; color: #333; width: 60px; }
+        .btn { padding: 15px 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; }
+        .btn-mic { background: #eee; }
         .btn-send { background: var(--main-color); color: white; flex: 1; }
-        .btn:active { transform: scale(0.95); }
     </style>
 </head>
 <body>
 
     <div class="container">
-        <h1>Doboni English Tutor</h1>
+        <h1>Doboni English</h1>
         
         <div class="character-box">
-            <img id="doboni-img" src="דובוני.jpeg" alt="Doboni">
+            <img src="דובוני.jpeg" alt="Doboni">
         </div>
 
-        <div id="response-text" class="chat-box">היי! אני דובוני. בוא נלמד אנגלית!</div>
+        <div id="response-text" class="chat-box">Hi! Let's start the lesson.</div>
 
         <div class="input-group">
-            <input type="text" id="user-input" placeholder="כתוב כאן או דבר...">
+            <input type="text" id="user-input" placeholder="Type or speak...">
             <button class="btn btn-mic" onclick="startDictation()">🎤</button>
         </div>
         
-        <button id="send-btn" class="btn btn-send">שלח הודעה</button>
+        <button id="send-btn" class="btn btn-send">Send to Doboni</button>
     </div>
 
     <script>
-        const img = document.getElementById('doboni-img');
-        const responseBox = document.getElementById('response-text');
-
         function startDictation() {
-            if (!window.webkitSpeechRecognition) {
-                alert("הדפדפן לא תומך במיקרופון.");
-                return;
-            }
             const recognition = new webkitSpeechRecognition();
             recognition.lang = 'en-US';
             recognition.start();
@@ -96,7 +83,7 @@
             const val = document.getElementById('user-input').value;
             if(!val) return;
 
-            responseBox.innerText = "...דובוני חושב";
+            document.getElementById('response-text').innerText = "...";
             
             try {
                 const res = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
@@ -105,16 +92,10 @@
                     body: JSON.stringify({ content: val })
                 });
 
-                // הפעלת אפקט "דיבור" כשהתשובה חוזרת
-                img.classList.add('is-talking');
-                const data = await res.text(); // מניח ש-Make מחזיר טקסט
-                responseBox.innerText = data || "נשלח בהצלחה!";
-                
-                // הפסקת ה"דיבור" אחרי 3 שניות
-                setTimeout(() => img.classList.remove('is-talking'), 3000);
-                
+                const data = await res.text();
+                document.getElementById('response-text').innerText = data;
             } catch (e) {
-                responseBox.innerText = "אופס, יש תקלה בתקשורת.";
+                document.getElementById('response-text').innerText = "Error communicating.";
             }
         });
     </script>
