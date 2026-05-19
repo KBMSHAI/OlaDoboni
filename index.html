@@ -1,18 +1,80 @@
 <!DOCTYPE html>
-<html lang="he">
+<html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doboni English Tutor</title>
     <style>
-        body { text-align: center; font-family: Arial, sans-serif; padding-top: 50px; }
-        img { width: 200px; height: 200px; border-radius: 50%; }
-        h1 { color: #333; }
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #1a1a1a;
+            color: white;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+        }
+        .container {
+            background: #2d2d2d;
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            max-width: 400px;
+            width: 90%;
+        }
+        #doboni-img {
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 5px solid #007bff;
+            margin-bottom: 20px;
+        }
+        h1 { margin-bottom: 10px; font-size: 1.5rem; }
+        p { margin-bottom: 20px; color: #ccc; }
+        #mic-btn {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 15px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: 0.3s;
+            width: 100%;
+        }
+        #mic-btn:hover { background-color: #0056b3; }
+        #input-field {
+            width: 100%;
+            padding: 10px;
+            margin-top: 15px;
+            border-radius: 5px;
+            border: none;
+            box-sizing: border-box;
+        }
     </style>
 </head>
 <body>
-    <img src="https://images.unsplash.com/photo-1555685812-4b943f1cb0eb?w=500" alt="Doboni">
-    <h1>Welcome to Doboni English Tutor!</h1>
-    <p>Click the microphone to start practicing.</p>
+
+    <div class="container">
+        <img id="doboni-img" src="https://i.ibb.co/hK78L7Z/1000076831.jpg" alt="Doboni Character">
+        
+        <h1>דובוני מורה לאנגלית</h1>
+        <p>ההודעה נשלחה! מחבר את תשובת המורה...</p>
+        
+        <button id="mic-btn">🎤 לחצי כדי לדבר</button>
+        <input type="text" id="input-field" placeholder="או הקלידי כאן...">
+    </div>
+
+    <script>
+        // לוגיקת המיקרופון והתקשורת עם Make
+        document.getElementById('mic-btn').addEventListener('click', function() {
+            alert('המיקרופון מופעל! המערכת מאזינה...');
+            // כאן יתבצע החיבור לאוטומציה שלך ב-Make
+        });
+    </script>
 </body>
 </html>
