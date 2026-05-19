@@ -3,78 +3,68 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doboni English Tutor</title>
+    <title>דובוני מורה לאנגלית</title>
     <style>
         body {
+            background-color: #121212;
+            color: #ffffff;
+            font-family: sans-serif;
             display: flex;
-            flex-direction: column;
-            align-items: center;
             justify-content: center;
-            min-height: 100vh;
+            align-items: center;
+            height: 100vh;
             margin: 0;
-            background-color: #1a1a1a;
-            color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            text-align: center;
         }
-        .container {
-            background: #2d2d2d;
-            padding: 30px;
+        .card {
+            background-color: #1e1e1e;
+            padding: 40px;
             border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-            max-width: 400px;
-            width: 90%;
+            text-align: center;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5);
+            width: 350px;
         }
-        #doboni-img {
-            width: 200px;
-            height: 200px;
+        img {
+            width: 150px;
+            height: 150px;
             border-radius: 50%;
-            object-fit: cover;
-            border: 5px solid #007bff;
+            border: 4px solid #4a90e2;
             margin-bottom: 20px;
         }
-        h1 { margin-bottom: 10px; font-size: 1.5rem; }
-        p { margin-bottom: 20px; color: #ccc; }
-        #mic-btn {
-            background-color: #007bff;
+        h1 { font-size: 24px; margin-bottom: 10px; }
+        p { color: #aaaaaa; margin-bottom: 30px; }
+        .mic-btn {
+            background-color: #4a90e2;
             color: white;
             border: none;
-            padding: 15px 25px;
+            padding: 15px 30px;
             border-radius: 50px;
-            font-size: 1rem;
+            font-size: 16px;
             cursor: pointer;
-            transition: 0.3s;
             width: 100%;
         }
-        #mic-btn:hover { background-color: #0056b3; }
-        #input-field {
+        .input-box {
             width: 100%;
             padding: 10px;
             margin-top: 15px;
-            border-radius: 5px;
+            background: #333;
             border: none;
+            color: white;
+            border-radius: 5px;
             box-sizing: border-box;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <img id="doboni-img" src="https://i.ibb.co/hK78L7Z/1000076831.jpg" alt="Doboni Character">
+    <div class="card">
+        <img src="https://raw.githubusercontent.com/KBMSHAI/OlaDoboni/main/1000076831.jpg" alt="דובוני">
         
         <h1>דובוני מורה לאנגלית</h1>
         <p>ההודעה נשלחה! מחבר את תשובת המורה...</p>
         
-        <button id="mic-btn">🎤 לחצי כדי לדבר</button>
-        <input type="text" id="input-field" placeholder="או הקלידי כאן...">
+        <button class="mic-btn" onclick="alert('המיקרופון מופעל!')">🎤 לחצי כדי לדבר</button>
+        <input type="text" class="input-box" placeholder="או הקלידי כאן...">
     </div>
 
-    <script>
-        // לוגיקת המיקרופון והתקשורת עם Make
-        document.getElementById('mic-btn').addEventListener('click', function() {
-            alert('המיקרופון מופעל! המערכת מאזינה...');
-            // כאן יתבצע החיבור לאוטומציה שלך ב-Make
-        });
-    </script>
 </body>
 </html>
