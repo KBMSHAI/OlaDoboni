@@ -1,63 +1,21 @@
-<!DOCTYPE html>
-<html lang="he" dir="rtl">
-<head>
-    <style>
-        body { background: #0b1a0b; color: #e0e0e0; font-family: 'Segoe UI', sans-serif; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; margin: 0; overflow: hidden; }
-        #stars { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 0; }
-        .star-letter { position: absolute; color: rgba(255, 255, 255, 0.15); font-size: 20px; font-weight: bold; }
+async function sendMessage() {
+    const input = document.getElementById('user-input').value;
+    const resBox = document.getElementById('response-box');
+    const imgElement = document.getElementById('doboni-img'); // https://ibb.co/pgftkr7
+
+    try {
+        const res = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({ "content": input })
+        });
+        const data = await res.json();
         
-        #doboni-wrapper { z-index: 1; text-align: center; }
-        #doboni-img { width: 350px; height: 350px; object-fit: cover; border: 4px solid #d4af37; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        // עדכון טקסט ותמונה
+        resBox.innerText = data.avatar_script;
+        if(data.avatar_url) imgElement.src = data.avatar_url;
         
-        #chat-area { margin-top: 20px; width: 400px; }
-        #response-box { background: rgba(255, 255, 255, 0.05); border: 1px solid #444; padding: 15px; border-radius: 10px; margin-bottom: 10px; min-height: 60px; font-size: 1.1em; }
-        input { width: 70%; padding: 10px; border-radius: 5px; border: none; }
-        button { padding: 10px 20px; border-radius: 5px; border: none; background: #d4af37; cursor: pointer; font-weight: bold; }
-    </style>
-</head>
-<body>
-    <div id="stars"></div>
-    <div id="doboni-wrapper">
-        <img id="doboni-img" src="https://i.ibb.co/Lpx479P/pgftkr7.jpg" alt="Doboni">
-        <div id="chat-area">
-            <div id="response-box">דובוני מקשיב...</div>
-            <input type="text" id="user-input" placeholder="כתוב משהו באנגלית...">
-            <button id="send-btn">שלח</button>
-        </div>
-    </div>
-
-    <script>
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        for(let i=0; i<16; i++) {
-            let s = document.createElement('div');
-            s.className = 'star-letter';
-            s.innerText = letters[Math.floor(Math.random()*26)];
-            s.style.top = Math.random()*80 + 'vh';
-            s.style.left = Math.random()*80 + 'vw';
-            document.getElementById('stars').appendChild(s);
-        }
-
-        async function sendMessage() {
-            const input = document.getElementById('user-input').value;
-            const resBox = document.getElementById('response-box');
-            if(!input) return;
-            
-            resBox.innerText = "דובוני חושב...";
-            try {
-                const res = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify({ "content": input })
-                });
-                const data = await res.json();
-                resBox.innerText = data.avatar_script || "לא התקבלה תשובה תקינה.";
-            } catch (err) {
-                resBox.innerText = "שגיאה בחיבור לשרת. בדוק את ה-Make.";
-            }
-        }
-
-        document.getElementById('send-btn').onclick = sendMessage;
-        document.getElementById('user-input').onkeypress = (e) => { if(e.key === 'Enter') sendMessage(); };
-    </script>
-</body>
-</html>
+    } catch (err) {
+        resBox.innerText = "שגיאה: וודא שה-Scenario ב-Make דולק ושהקישור תקין.";
+    }
+}
