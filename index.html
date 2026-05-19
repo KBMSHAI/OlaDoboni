@@ -3,74 +3,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doboni Tutor</title>
+    <title>Doboni English Tutor</title>
     <style>
-        /* כאן משנים את הצבע בהתאם לנושא השיעור */
-        :root { 
-            --bg-color: #e0f7fa; /* צבע רקע משתנה */
-            --main-color: #ff9800; 
-        }
+        /* רקע נושא השיעור - גוון ירוק טבעי ומרגיע */
+        :root { --bg-color: #e8f5e9; --main-color: #4caf50; }
         
         body { 
             font-family: 'Segoe UI', sans-serif; 
             background-color: var(--bg-color); 
             display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; transition: background-color 0.5s;
+            min-height: 100vh; margin: 0; padding: 20px;
         }
         
         .container { 
-            background: #fff; padding: 30px; border-radius: 40px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.1); 
-            text-align: center; width: 90%; max-width: 450px; 
+            background: #ffffff; padding: 40px; border-radius: 50px; 
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1); 
+            text-align: center; width: 100%; max-width: 500px; 
         }
 
-        /* עיצוב דמות חלק */
-        .character-box { margin-bottom: 25px; }
+        .character-box { margin-bottom: 30px; }
         img { 
-            width: 180px; height: 180px; 
-            border-radius: 30px; /* פינות מעוגלות חלקות */
-            object-fit: cover; /* מונע עיוות של התמונה */
-            border: 4px solid #fff;
+            width: 200px; height: 200px; 
+            border-radius: 40px; 
+            object-fit: cover; 
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            border: 5px solid #fff;
         }
 
-        .chat-box { 
-            background: #f1f1f1; padding: 20px; border-radius: 20px; 
-            margin-bottom: 20px; min-height: 60px; font-size: 1.1rem;
+        #response-text { 
+            background: #f1f8e9; padding: 20px; border-radius: 20px; 
+            margin-bottom: 25px; min-height: 80px; font-size: 1.2rem;
+            color: #2e7d32; font-weight: 500;
         }
 
         .input-group { display: flex; gap: 10px; margin-bottom: 20px; }
         input { 
-            flex: 1; padding: 15px; border: none; 
-            background: #f9f9f9; border-radius: 15px; font-size: 16px;
+            flex: 1; padding: 15px; border: 2px solid #ddd; 
+            border-radius: 20px; font-size: 16px; outline: none;
         }
         
-        .btn { padding: 15px 20px; border: none; border-radius: 15px; cursor: pointer; font-weight: bold; }
-        .btn-mic { background: #eee; }
+        button { 
+            padding: 15px 25px; border: none; border-radius: 20px; 
+            cursor: pointer; font-weight: bold; transition: 0.3s;
+        }
+        .btn-mic { background: #eee; font-size: 20px; }
         .btn-send { background: var(--main-color); color: white; flex: 1; }
+        button:hover { opacity: 0.9; }
     </style>
 </head>
 <body>
 
     <div class="container">
         <h1>Doboni English</h1>
-        
         <div class="character-box">
             <img src="דובוני.jpeg" alt="Doboni">
         </div>
 
-        <div id="response-text" class="chat-box">Hi! Let's start the lesson.</div>
+        <div id="response-text">Hi! I'm Doboni, let's learn together!</div>
 
         <div class="input-group">
-            <input type="text" id="user-input" placeholder="Type or speak...">
-            <button class="btn btn-mic" onclick="startDictation()">🎤</button>
+            <input type="text" id="user-input" placeholder="כתוב כאן...">
+            <button class="btn-mic" onclick="startDictation()">🎤</button>
         </div>
         
-        <button id="send-btn" class="btn btn-send">Send to Doboni</button>
+        <button id="send-btn" class="btn-send">Send to Doboni</button>
     </div>
 
     <script>
         function startDictation() {
+            if (!window.webkitSpeechRecognition) { alert("הדפדפן לא תומך"); return; }
             const recognition = new webkitSpeechRecognition();
             recognition.lang = 'en-US';
             recognition.start();
@@ -83,19 +84,19 @@
             const val = document.getElementById('user-input').value;
             if(!val) return;
 
-            document.getElementById('response-text').innerText = "...";
+            document.getElementById('response-text').innerText = "Thinking...";
             
             try {
                 const res = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ content: val })
+                    body: JSON.stringify({ "content": val })
                 });
 
                 const data = await res.text();
-                document.getElementById('response-text').innerText = data;
+                document.getElementById('response-text').innerText = data || "Got it!";
             } catch (e) {
-                document.getElementById('response-text').innerText = "Error communicating.";
+                document.getElementById('response-text').innerText = "Network Error.";
             }
         });
     </script>
