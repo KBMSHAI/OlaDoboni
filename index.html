@@ -2,65 +2,34 @@
 <html lang="he" dir="rtl">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doboni English Video Tutor</title>
+    <title>Doboni Video Learning</title>
     <style>
-        :root { 
-            --main-color: #ff9800; /* כתום דובוני */
-            --bg-accent: #fdf2e9; 
-        }
-        
         body { 
-            font-family: 'Segoe UI', 'Assistant', sans-serif; 
-            /* רקע לימודי - אותיות ומילים באנגלית */
-            background-image: url('{{YOUR_ENGLISH_BACKGROUND_IMAGE_URL}}'); 
-            background-size: cover; 
-            background-position: center; 
+            font-family: 'Segoe UI', sans-serif; 
+            /* רקע עם אותיות באנגלית */
+            background-image: url('https://images.unsplash.com/photo-1503676260728-1c00da094a0b?auto=format&fit=crop&w=1600&q=80');
+            background-size: cover; background-position: center;
             display: flex; justify-content: center; align-items: center; 
-            min-height: 100vh; margin: 0; padding: 20px;
+            min-height: 100vh; margin: 0;
         }
-        
         .container { 
-            background: rgba(255, 255, 255, 0.95); /* לבן שקוף מעט */
-            padding: 40px; border-radius: 50px; 
-            box-shadow: 0 30px 60px rgba(0,0,0,0.15); 
-            text-align: center; width: 100%; max-width: 500px; 
-            backdrop-filter: blur(5px); /* טשטוש עדין מאחור */
+            background: rgba(255, 255, 255, 0.9); padding: 40px; border-radius: 40px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3); text-align: center; 
+            width: 90%; max-width: 450px;
         }
-
-        .character-box { margin-bottom: 30px; position: relative; }
-        img { 
-            width: 220px; height: 220px; 
-            border-radius: 50px; /* פינות מעוגלות רכות וחלקות */
-            object-fit: cover; /* חיתוך מושלם של התמונה */
-            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
-            border: 6px solid #fff;
-            background: #fff;
+        .character-box img { 
+            width: 250px; height: 250px; border-radius: 30px; 
+            object-fit: cover; border: 8px solid #ff9800;
+            margin-bottom: 20px;
         }
-
         #response-text { 
-            background: #fff3e0; padding: 25px; border-radius: 25px; 
-            margin-bottom: 30px; min-height: 100px; font-size: 1.3rem;
-            color: #e65100; font-weight: 500; line-height: 1.5;
-            border: 2px solid #ffe0b2;
+            background: #fff3e0; padding: 20px; border-radius: 20px; 
+            margin-bottom: 20px; min-height: 80px; font-size: 1.2rem;
+            color: #e65100; font-weight: bold;
         }
-
-        .input-group { display: flex; gap: 15px; margin-bottom: 25px; }
-        input { 
-            flex: 1; padding: 18px; border: 2px solid #ddd; 
-            border-radius: 20px; font-size: 16px; outline: none;
-            transition: border-color 0.3s;
-        }
-        input:focus { border-color: var(--main-color); }
-        
-        button { 
-            padding: 18px 28px; border: none; border-radius: 20px; 
-            cursor: pointer; font-weight: bold; transition: 0.3s;
-            font-size: 16px;
-        }
-        .btn-mic { background: #eee; font-size: 22px; }
-        .btn-send { background: var(--main-color); color: white; flex: 1; }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
+        .input-group { display: flex; gap: 10px; }
+        input { flex: 1; padding: 15px; border-radius: 15px; border: 2px solid #ccc; }
+        .btn-send { background: #ff9800; color: white; padding: 15px 25px; border: none; border-radius: 15px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -68,37 +37,24 @@
     <div class="container">
         <h1>Doboni Video Learning</h1>
         <div class="character-box">
-            <img src="{{YOUR_DOBONI_IMAGE_URL}}" alt="Doboni Video Tutor">
+            <img src="https://i.ibb.co/220260119/avatar-casual.jpg" alt="Doboni">
         </div>
 
         <div id="response-text">Hi! I'm Doboni. What do you want to learn today?</div>
 
         <div class="input-group">
             <input type="text" id="user-input" placeholder="Type topic (e.g., Summer)...">
-            <button class="btn-mic" onclick="startDictation()">🎤</button>
+            <button class="btn-send" id="send-btn">Send</button>
         </div>
-        
-        <button id="send-btn" class="btn-send">Send to Doboni</button>
     </div>
 
     <script>
-        function startDictation() {
-            if (!window.webkitSpeechRecognition) { alert("הדפדפן לא תומך בזיהוי קולי"); return; }
-            const recognition = new webkitSpeechRecognition();
-            recognition.lang = 'en-US';
-            recognition.start();
-            recognition.onresult = (e) => {
-                document.getElementById('user-input').value = e.results[0][0].transcript;
-            };
-        }
-
         document.getElementById('send-btn').addEventListener('click', async () => {
-            const userInputField = document.getElementById('user-input');
-            const val = userInputField.value;
+            const val = document.getElementById('user-input').value;
             if(!val) return;
 
-            document.getElementById('response-text').innerText = "Thinking...";
-            userInputField.value = ''; // ניקוי התיבה
+            const resDiv = document.getElementById('response-text');
+            resDiv.innerText = "Doboni is thinking...";
 
             try {
                 const res = await fetch('https://hook.eu1.make.com/mg2eun8ra3e5kihnxtw559ns468q5a71', {
@@ -107,22 +63,14 @@
                     body: JSON.stringify({ "content": val })
                 });
 
-                // <<-- כאן בדיוק! -->> ה-JSON.parse מתבצע על הטקסט שחוזר מה-Make
-                const rawData = await res.text(); 
-                console.log("Raw from Make:", rawData); // הדפסה לבדיקה ב-Console
+                const rawData = await res.text();
+                // הניסיון לפענח את התשובה כ-JSON
+                const data = JSON.parse(rawData);
                 
-                try {
-                    const data = JSON.parse(rawData);
-                    // כאן אנחנו משתמשים רק ב-script של דובוני להצגה בתיבה
-                    document.getElementById('response-text').innerText = data.avatar_script;
-                } catch (jsonError) {
-                    console.error("JSON parsing error:", jsonError);
-                    document.getElementById('response-text').innerText = rawData; // הדפסת הגולמי במקרה שגיאה
-                }
-
+                // מציג רק את הטקסט של הסקריפט
+                resDiv.innerText = data.avatar_script || "Got it!";
             } catch (e) {
-                document.getElementById('response-text').innerText = "Network Error.";
-                console.error(e);
+                resDiv.innerText = "Error - check Make Scenario logs!";
             }
         });
     </script>
